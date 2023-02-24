@@ -16,7 +16,7 @@
 
 from distutils.core import setup
 from qpython import __version__
-
+from qpython.utils import cc
 import os
 
 try:
@@ -25,17 +25,8 @@ try:
 except:
     include_dirs = []
 
-try:
-    from Cython.Build import cythonize
-except ImportError:
-    use_cython = False
-else:
-    use_cython = True
 
-if use_cython:
-    ext_modules = cythonize('qpython/fastutils.pyx')
-else:
-    ext_modules = []
+ext_modules = [cc.distutils_extension()]
 
 
 # Utility function to read the README file.
@@ -83,6 +74,6 @@ setup(name = 'qPython',
           'Topic :: Software Development',
           ],
       packages = ['qpython'],
-      package_data = {'qpython': ['fastutils.pyx']},
+      #package_data = {'qpython': ['fastutils.pyx']},
       data_files = [('', ['LICENSE', 'CHANGELOG.txt', 'README.rst', 'requirements.txt'])]
      )
