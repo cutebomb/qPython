@@ -14,57 +14,53 @@
 #
 
 import numpy
+from numba.pycc import CC
 
+cc = CC('utils')
 
+cc.verbose = True
 
+@cc.export('uncompress', 'i1[:](i1[:], i4)')
 def uncompress(data, uncompressed_size):
-    _0 = numpy.intc(0)
-    _1 = numpy.intc(1)
-    _2 = numpy.intc(2)
-    _128 = numpy.intc(128)
-    _255 = numpy.intc(255)
+    n, r, f, s, p, i, d = 0, 0, 0, 0, 0, 0, 0
+    b = numpy.zeros(256, dtype = numpy.int32)
+    uncompressed = numpy.zeros(uncompressed_size, dtype = numpy.byte)
 
-    n, r, s, p = _0, _0, _0, _0
-    i, d = _1, _1
-    f = _255 & data[_0]
+    while s < len(uncompressed):
+        if i == 0:
+            f = 0xff & data[d]
+            d = d + 1
+            i = 1
 
-    ptrs = numpy.zeros(256, dtype = numpy.intc)
-    uncompressed = numpy.zeros(uncompressed_size, dtype = numpy.uint8)
-    idx = numpy.arange(uncompressed_size, dtype = numpy.intc)
+        if (f & i) != 0:
+            r = b[0xff & data[d]]
+            d = d + 1
+            uncompressed[s] = uncompressed[r]
+            s = s + 1
+            r = r + 1
+            uncompressed[s] = uncompressed[r]
+            s = s + 1
+            r = r + 1
+            n = 0xff & data[d]
+            d = d + 1
+            for m in range(n):
+                uncompressed[s + m] = uncompressed[r + m]
+        else:
+            uncompressed[s] = data[d]
+            s = s + 1
+            d = d + 1
 
-    while s < uncompressed_size:
-        pp = p + _1
+        while p < s - 1:
+            b[(0xff & uncompressed[p]) ^ (0xff & uncompressed[p + 1])] = p
+            p = p + 1
 
-        if f & i:
-            r = ptrs[data[d]]
-            n = _2 + data[d + _1]
-            uncompressed[idx[s:s + n]] = uncompressed[r:r + n]
-
-            ptrs[(uncompressed[p]) ^ (uncompressed[pp])] = p
-            if s == pp:
-                ptrs[(uncompressed[pp]) ^ (uncompressed[pp + _1])] = pp
-
-            d += _2
-            r += _2
+        if (f & i) != 0:
             s = s + n
             p = s
 
-        else:
-            uncompressed[s] = data[d]
+        i *= 2
 
-            if pp == s:
-                ptrs[(uncompressed[p]) ^ (uncompressed[pp])] = p
-                p = pp
-
-            s += _1
-            d += _1
-
-        if i == _128:
-            if s < uncompressed_size:
-                f = _255 & data[d]
-                d += _1
-                i = _1
-        else:
-            i += i
+        if i == 256:
+            i = 0
 
     return uncompressed
