@@ -26,9 +26,9 @@ from qpython.qcollection import qlist, QDictionary, qtable, QTable, QKeyedTable
 from qpython.qtemporal import qtemporal, from_raw_qtemporal, array_from_raw_qtemporal
 
 try:
-    from qpython.fastutils import uncompress
-except:
     from qpython.utils import uncompress
+except:
+    from qpython.fastutils import uncompress
 
 
 
