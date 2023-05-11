@@ -64,3 +64,6 @@ def uncompress(data, uncompressed_size):
             i = 0
 
     return uncompressed
+
+if __name__ == '__main__':
+    cc.compile()
