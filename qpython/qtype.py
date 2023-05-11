@@ -161,7 +161,7 @@ ATOM_SIZE = ( 0, 1, 16, 0, 1, 2, 4, 8, 4, 8, 1, 0, 8, 4, 4, 8, 8, 4, 4, 4 )
 
 # mapping of q atoms to corresponding Python types
 PY_TYPE = {
-    QBOOL:          numpy.bool_,
+    QBOOL:          bool,
     QBYTE:          numpy.byte,
     QGUID:          numpy.object_,
     QSHORT:         numpy.int16,
@@ -187,8 +187,6 @@ PY_TYPE = {
 # mapping of Python types to corresponding q atoms
 Q_TYPE = {
     bool             : QBOOL,
-    numpy.bool       : QBOOL,
-    numpy.bool_      : QBOOL,
     numpy.byte       : QBYTE,
     numpy.int16      : QSHORT,
     int              : QINT,
