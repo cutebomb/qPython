@@ -17,8 +17,8 @@ For more details please refer to the `documentation`_.
 
 Installation
 ------------
-
+```bash
 git clone https://github.com/cutebomb/qPython && cd qPython
 pip install .
-
+```
 
